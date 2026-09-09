@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+:root {
+  --color-midnight: #0c0f60;
+  --color-electric: #265adf;
+  --color-cream: #f7f7f3;
+
+  --font-serif: var(--font-dm-serif);
+  --font-sans: var(--font-inter);
+}
+
+@theme inline {
+  --color-midnight: var(--color-midnight);
+  --color-electric: var(--color-electric);
+  --color-cream: var(--color-cream);
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+section[id] {
+  /* Extra 64px clears each section's rounded-top corner (up to 56px radius)
+     so landing shows solid section color under the nav, not the section
+     behind peeking through the corner's curve cutout. */
+  scroll-margin-top: calc(var(--nav-height, 88px) + 64px);
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-midnight);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-electric);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
