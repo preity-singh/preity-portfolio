@@ -1,7 +1,6 @@
 "use client";
 
-import { motion, useAnimation, useReducedMotion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { CarouselPhoto } from "@/lib/photos";
 import { PlayPhoto } from "./PlayPhoto";
 
@@ -9,47 +8,39 @@ type PlayCarouselProps = {
   photos: CarouselPhoto[];
 };
 
+const buttonClass =
+  "absolute top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-midnight text-cream transition-opacity duration-200 hover:bg-electric disabled:pointer-events-none disabled:opacity-0";
+
 export function PlayCarousel({ photos }: PlayCarouselProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const prefersReducedMotion = useReducedMotion();
-  const [maxDrag, setMaxDrag] = useState(0);
-  const controls = useAnimation();
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const updateEdges = useCallback(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  }, []);
 
   useEffect(() => {
-    function measure() {
-      if (!containerRef.current || !trackRef.current) return;
-      const overflow =
-        trackRef.current.scrollWidth - containerRef.current.clientWidth;
-      setMaxDrag(Math.max(0, overflow));
-    }
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, [photos]);
+    updateEdges();
+    window.addEventListener("resize", updateEdges);
+    return () => window.removeEventListener("resize", updateEdges);
+  }, [photos, updateEdges]);
 
-  // One-time nudge so the strip's motion — not an arrow or dot — signals
-  // it's draggable; skipped entirely under prefers-reduced-motion.
-  useEffect(() => {
-    if (prefersReducedMotion || maxDrag === 0) return;
-    const timeout = setTimeout(() => {
-      controls.start({
-        x: [0, -48, 0],
-        transition: { duration: 1.1, ease: "easeInOut", times: [0, 0.6, 1] },
-      });
-    }, 700);
-    return () => clearTimeout(timeout);
-  }, [maxDrag, prefersReducedMotion, controls]);
+  function scrollByPage(direction: -1 | 1) {
+    const el = scrollerRef.current;
+    if (!el) return;
+    el.scrollBy({ left: direction * el.clientWidth * 0.8, behavior: "smooth" });
+  }
 
   return (
-    <div ref={containerRef} className="overflow-hidden">
-      <motion.div
-        ref={trackRef}
-        drag={prefersReducedMotion ? false : "x"}
-        dragConstraints={{ left: -maxDrag, right: 0 }}
-        dragElastic={0.06}
-        animate={controls}
-        className="flex w-max cursor-grab gap-6 active:cursor-grabbing sm:gap-8"
+    <div className="relative">
+      <div
+        ref={scrollerRef}
+        onScroll={updateEdges}
+        className="flex gap-6 overflow-x-auto overflow-y-hidden overscroll-x-contain [scrollbar-width:none] sm:gap-8 [&::-webkit-scrollbar]:hidden"
       >
         {photos.map((photo) => (
           <PlayPhoto
@@ -59,7 +50,30 @@ export function PlayCarousel({ photos }: PlayCarouselProps) {
             className="aspect-[4/5] h-[380px] w-auto shrink-0 sm:h-[440px] lg:h-[520px]"
           />
         ))}
-      </motion.div>
+      </div>
+
+      <button
+        type="button"
+        aria-label="previous photos"
+        disabled={!canScrollLeft}
+        onClick={() => scrollByPage(-1)}
+        className={`${buttonClass} left-3 sm:left-4`}
+      >
+        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M15 5l-7 7 7 7" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        aria-label="next photos"
+        disabled={!canScrollRight}
+        onClick={() => scrollByPage(1)}
+        className={`${buttonClass} right-3 sm:right-4`}
+      >
+        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
     </div>
   );
 }

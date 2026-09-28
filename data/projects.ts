@@ -6,6 +6,7 @@ export type Project = {
   description: string;
   tech?: string[];
   github?: string;
+  liveUrl?: string;
   demoUrl?: string;
 };
 
@@ -19,12 +20,13 @@ export const pitcrewlabs: Project = {
 };
 
 export const strava: Project = {
-  slug: "strava-overtraining-detector",
-  name: "Strava Overtraining Detector",
+  slug: "running-load-insights",
+  name: "Running Load Insights",
   description:
-    "A tool that pulls a runner's real Strava history and plots their Acute:Chronic Workload Ratio against labeled risk thresholds. An LLM layer turns the ratio into a coaching note with specific, forward-looking guidance.",
-  tech: ["Python", "FastAPI", "React", "Recharts", "Strava OAuth", "Groq / Llama"],
-  github: "https://github.com/preity-singh/strava-overtraining-detector",
+    "A tool that turns a runner's Strava history into a week-by-week injury risk chart. It plots Acute:Chronic Workload Ratio against labeled risk zones, and an LLM turns the pre-computed numbers into a coaching note with specific, forward-looking guidance.",
+  tech: ["Python", "FastAPI", "React", "Recharts", "Groq", "Vercel"],
+  liveUrl: "https://running-load-insights.vercel.app",
+  github: "https://github.com/preity-singh/running-load-insights",
 };
 
 export const stripe: Project = {
@@ -41,6 +43,7 @@ export const stripe: Project = {
     "Notion API",
   ],
   demoUrl: "https://stripe-customer-support-agent.streamlit.app/",
+  github: "https://github.com/preity-singh/stripe-rag-agent/tree/deploy",
 };
 
 export const previousRoles = [

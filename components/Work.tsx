@@ -41,7 +41,16 @@ export function Work() {
             <StravaChart />
 
             <div className="mt-4 flex items-center gap-4 font-sans text-sm">
-              <span className="text-cream/40">watch demo ↗</span>
+              {strava.liveUrl && (
+                <a
+                  href={strava.liveUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-cream/70 transition-colors hover:text-cream"
+                >
+                  live site ↗
+                </a>
+              )}
               {strava.github && (
                 <a
                   href={strava.github}
@@ -53,9 +62,6 @@ export function Work() {
                 </a>
               )}
             </div>
-            <p className="mt-1 font-sans text-xs text-cream/30">
-              demo video coming soon
-            </p>
           </CursorGlowCard>
 
           <CursorGlowCard>
@@ -69,8 +75,8 @@ export function Work() {
 
             <StripeFlow />
 
-            {stripe.demoUrl && (
-              <div className="mt-4 flex items-center gap-4 font-sans text-sm">
+            <div className="mt-4 flex items-center gap-4 font-sans text-sm">
+              {stripe.demoUrl && (
                 <a
                   href={stripe.demoUrl}
                   target="_blank"
@@ -79,8 +85,18 @@ export function Work() {
                 >
                   try it ↗
                 </a>
-              </div>
-            )}
+              )}
+              {stripe.github && (
+                <a
+                  href={stripe.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-cream/70 transition-colors hover:text-cream"
+                >
+                  github ↗
+                </a>
+              )}
+            </div>
           </CursorGlowCard>
         </div>
 
