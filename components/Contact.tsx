@@ -11,6 +11,14 @@ export function Contact() {
 
         <div className="mt-10 flex flex-wrap items-center gap-x-10 gap-y-4 sm:mt-12">
           <a
+            href="/resume.pdf"
+            target="_blank"
+            rel="noreferrer"
+            className="font-sans text-base text-cream/70 transition-colors hover:text-cream sm:text-lg"
+          >
+            resume ↗
+          </a>
+          <a
             href="mailto:preitysingh023@gmail.com"
             className="font-sans text-base text-cream/70 transition-colors hover:text-cream sm:text-lg"
           >
